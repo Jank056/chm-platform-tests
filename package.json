@@ -1,0 +1,25 @@
+{
+  "name": "chm-platform-tests",
+  "version": "0.1.0",
+  "description": "End-to-end tests for the CHM platform (CHT + MediaHub) using Playwright",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:anonymous": "playwright test tests/anonymous",
+    "test:hcp": "playwright test tests/hcp",
+    "test:admin": "playwright test tests/admin",
+    "test:brand": "playwright test tests/brand",
+    "test:cross-system": "playwright test tests/cross-system",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "@axe-core/playwright": "^4.10.0"
+  }
+}

@@ -1,0 +1,53 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium-desktop, mobile-safari]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Run tests (${{ matrix.project }})
+        env:
+          CHT_BASE_URL: ${{ secrets.CHT_BASE_URL || 'https://staging.testapp.communityhealth.media' }}
+          MEDIAHUB_BASE_URL: ${{ secrets.MEDIAHUB_BASE_URL || 'https://mediahub.communityhealth.media' }}
+          PLAYWRIGHT_HCP_EMAIL: ${{ secrets.PLAYWRIGHT_HCP_EMAIL }}
+          PLAYWRIGHT_HCP_PASSWORD: ${{ secrets.PLAYWRIGHT_HCP_PASSWORD }}
+          PLAYWRIGHT_ADMIN_EMAIL: ${{ secrets.PLAYWRIGHT_ADMIN_EMAIL }}
+          PLAYWRIGHT_ADMIN_PASSWORD: ${{ secrets.PLAYWRIGHT_ADMIN_PASSWORD }}
+        run: npx playwright test --project=${{ matrix.project }}
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: playwright-report/
+          retention-days: 7

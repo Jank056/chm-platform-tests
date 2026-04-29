@@ -1,0 +1,14 @@
+node_modules/
+test-results/
+playwright-report/
+playwright/.cache/
+.env
+.env.local
+
+# Generated auth state (reusable login fixtures)
+auth/
+
+# OS / IDE
+.DS_Store
+.vscode/
+*.swp
